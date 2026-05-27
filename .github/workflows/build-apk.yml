@@ -27,21 +27,23 @@ jobs:
       run: npm install -g cordova
 
     - name: Create Cordova Project
-      run: cordova create android-app com.contoh.app AplikasiSaya
+      run: cordova create android-app com.contoh.app EURO28
 
     - name: Copy All Web Files & Config to App
       run: |
-        # Membuat folder tujuan terlebih dahulu jika belum ada
-        mkdir -p android-app/www/
+        # 1. Hapus folder www bawaan dari Cordova terlebih dahulu
+        rm -rf android-app/www
         
-        # Menyalin file html, css, js, dan folder Fonts secara spesifik agar tidak crash
-        cp *.html android-app/www/ 2>/dev/null || true
-        cp *.css android-app/www/ 2>/dev/null || true
-        cp *.js android-app/www/ 2>/dev/null || true
+        # 2. Salin seluruh folder www milik Anda beserta semua isinya tanpa kecuali
+        cp -r www android-app/www
         
-        # Menyalin folder Fonts beserta isinya jika ada
-        if [ -d "Fonts" ]; then cp -r Fonts android-app/www/; fi
-        if [ -d "www/Fonts" ]; then cp -r www/Fonts android-app/www/; fi
+        # 3. Pengaturan Logo Otomatis (Mengambil logo.png dari dalam folder www)
+        if [ -f "android-app/www/logo.png" ]; then 
+          cp android-app/www/logo.png android-app/logo.png
+          cd android-app
+          sed -i '/<\/widget>/i \    <icon src="logo.png" \/>' config.xml
+        fi
+        
 
     - name: Build APK File
       run: |
