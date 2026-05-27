@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no">
+
+<title>Offline Game</title>
+
+
+<style>
+
+@font-face {
+  font-family: 'EURO28'; /* Nama bebas untuk dipanggil di bawah */
+  /* Sesuaikan 'huruf/' dengan nama folder tempat Anda menyimpan file font */
+  src: 
+       url('Fonts/Montserrat-Black.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ===== GLOBAL ===== */
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+
+    background-image: url('home.png');
+    
+    background-size: cover;      
+    background-position: center;
+    background-repeat: no-repeat; 
+    
+    color:white;
+    font-family:EURO28;
+}
+
+/* ===== SEMUA SCENE ===== */
+
+.scene{
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    flex-direction:column;
+}
+
+/* scene aktif */
+
+.active{
+    display:flex;
+}
+
+/* ===== START SCREEN ===== */
+
+#startBtn{
+
+    font-size:35px;
+
+    padding:20px 45px;
+
+    border:none;
+
+    border-radius:20px;
+    
+    font-family: EURO28;
+
+    background-image: url(bg.jpg);
+    
+    color: white;
+
+    font-weight:bold;
+}
+
+/* ===== VIDEO ===== */
+
+#video{
+
+    width:100vw;
+    height:100vh;
+
+    object-fit:cover;
+
+    background:black;
+}
+
+/* ===== COUNTDOWN ===== */
+
+#countdown{
+
+    display:flex;
+
+    gap:10px;
+
+    justify-content:center;
+    align-items:center;
+    font-family: EURO28;
+
+    flex-wrap:wrap;
+}
+
+#countScene{
+
+    background-image:url("bg.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+}
+
+.box{
+
+    width:140px;
+    height:140px;
+    
+
+    border-radius:25px;
+
+    background:rgba(255,255,255,0.08);
+
+    border:1px solid rgba(255,255,255,0.15);
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+    0 0 25px rgba(255,255,255,0.08);
+}
+
+.number{
+
+    font-size:45px;
+
+    font-weight:bold;
+}
+
+.label{
+
+    margin-top:8px;
+
+    opacity:0.7;
+}
+
+/* ===== MENU ===== */
+
+#menuScene h1{
+
+    font-size:60px;
+}
+
+#unlockScene{
+
+    background-image:
+    linear-gradient(
+        rgba(0,0,0,0.65),
+        rgba(0,0,0,0.65)
+    ),
+    url("unlock.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+}
+
+#unlockMain{
+
+    flex:1;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+}
+
+#bottomBar{
+
+    position:absolute;
+
+    bottom:0;
+
+    width:100%;
+
+    height:35px;
+
+    background:rgba(20,20,20,0.9);
+
+    backdrop-filter:blur(15px);
+
+    display:flex;
+
+    justify-content:space-evenly;
+    align-items:center;
+
+    border-top:
+    1px solid rgba(255,255,255,0.1);
+}
+
+.navBtn{
+
+    width:22%;
+
+    height:65px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.05);
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    color:white;
+
+    font-size:18px;
+}
+
+.activeNav{
+
+    background:white;
+
+    color:black;
+
+    font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ========================= -->
+<!-- START SCREEN -->
+<!-- ========================= -->
+
+<div id="startScene" class="scene active">
+
+    <button id="startBtn">
+        START
+    </button>
+
+</div>
+
+<!-- ========================= -->
+<!-- VIDEO SCREEN -->
+<!-- ========================= -->
+
+<div id="videoScene" class="scene">
+
+    <video id="video" playsinline>
+        <source src="UEFA.mp4" type="video/mp4">
+    </video>
+
+</div>
+
+<!-- ========================= -->
+<!-- COUNTDOWN SCREEN -->
+<!-- ========================= -->
+
+<div id="countScene" class="scene">
+
+    <div id="countdown">
+
+        <div class="box">
+            <div class="number" id="years">0</div>
+            <div class="label">Year</div>
+        </div>
+
+        <div class="box">
+            <div class="number" id="months">0</div>
+            <div class="label">Month</div>
+        </div>
+
+        <div class="box">
+            <div class="number" id="days">0</div>
+            <div class="label">Day</div>
+        </div>
+
+        <div class="box">
+            <div class="number" id="hours">0</div>
+            <div class="label">Hour</div>
+        </div>
+
+        <div class="box">
+            <div class="number" id="minutes">0</div>
+            <div class="label">Minute</div>
+        </div>
+        
+        <div class="label">New features will be added 10 days before the tournament.</div>
+
+    </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- UNLOCK SCENE -->
+<!-- ========================= -->
+
+<div id="unlockScene" class="scene">
+
+    <!-- CONTENT -->
+
+    <div id="unlockMain">
+
+        <div id="countdown">
+
+
+
+            <div class="box">
+                <div class="number" id="uDays">0</div>
+                <div class="label">Days</div>
+            </div>
+
+            <div class="box">
+                <div class="number" id="uHours">0</div>
+                <div class="label">Hours</div>
+            </div>
+
+            <div class="box">
+                <div class="number" id="uMinutes">0</div>
+                <div class="label">Minutes</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- NAVBAR -->
+
+    <div id="bottomBar">
+
+        <div class="navBtn activeNav">
+            Countdown
+        </div>
+
+        <div class="navBtn">
+            Trivia
+        </div>
+
+        <div class="navBtn">
+            -
+        </div>
+
+        <div class="navBtn">
+            -
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- MENU SCREEN -->
+<!-- ========================= -->
+
+<div id="menuScene" class="scene">
+
+    <h1>MENU GAME</h1>
+
+</div>
+<audio id="bgm"></audio>
+<script>
+
+/* ========================= */
+/* SCENE */
+/* ========================= */
+
+const startScene = document.getElementById("startScene");
+
+const videoScene = document.getElementById("videoScene");
+
+const countScene = document.getElementById("countScene");
+
+const menuScene = document.getElementById("menuScene");
+
+const unlockScene =
+document.getElementById("unlockScene");
+
+/* ========================= */
+/* ELEMENT */
+/* ========================= */
+
+const startBtn = document.getElementById("startBtn");
+
+const video = document.getElementById("video");
+
+const bgm =
+document.getElementById("bgm");
+
+/* ========================= */
+/* GANTI SCENE */
+/* ========================= */
+
+function showScene(scene){
+
+    document.querySelectorAll(".scene").forEach(s => {
+
+        s.classList.remove("active");
+
+    });
+
+    scene.classList.add("active");
+}
+
+function playMusic() {
+
+    bgm.src = playlist[currentSong];
+
+    bgm.play();
+
+    // lagu selesai
+    bgm.onended = () => {
+
+        currentSong++;
+
+        // balik ke awal playlist
+        if(currentSong >= playlist.length){
+
+            currentSong = 0;
+        }
+
+        playMusic();
+    };
+}
+
+
+/* ========================= */
+/* START */
+/* ========================= */
+
+startBtn.onclick = () => {
+
+    /* fullscreen */
+
+    if(document.documentElement.requestFullscreen){
+
+        document.documentElement.requestFullscreen();
+    }
+
+    /* landscape */
+
+    if(screen.orientation?.lock){
+
+        screen.orientation.lock("landscape").catch(()=>{});
+    }
+
+    /* pindah ke video */
+
+    showScene(videoScene);
+
+    /* play video */
+
+    video.play();
+};
+
+/* ========================= */
+/* VIDEO SELESAI */
+/* ========================= */
+const playlist = [
+
+    "bgsong1.mp3",
+    "bgsong2.mp3",
+    "bgsong3.mp3",
+    "bgsong4.mp3"
+];
+
+let currentSong = 0;
+
+video.onended = () => {
+
+    playMusic();
+
+    const now = new Date();
+
+    const unlockDate =
+    new Date(2028, 5, 1);
+
+    if(now < unlockDate){
+
+        showScene(countScene);
+
+        startCountdown();
+
+    }else{
+
+        showScene(unlockScene);
+    }
+};
+
+/* ========================= */
+/* COUNTDOWN */
+/* ========================= */
+
+function startCountdown(){
+
+    /* target 9 Juni 2028 */
+
+    const target = new Date(2028, 5, 9, 0, 0, 0);
+
+    function updateCountdown(){
+
+        const now = new Date();
+
+        const diff = target - now;
+
+        if(diff <= 0){
+
+            document.getElementById("years").innerText = 0;
+
+            document.getElementById("months").innerText = 0;
+
+            document.getElementById("days").innerText = 0;
+
+            document.getElementById("hours").innerText = 0;
+
+            document.getElementById("minutes").innerText = 0;
+
+            /* pindah menu setelah 3 detik */
+
+            setTimeout(() => {
+
+                showScene(menuScene);
+
+            }, 3000);
+
+            return;
+        }
+
+        /* total detik */
+
+        const totalSeconds = Math.floor(diff / 1000);
+
+        /* hitung */
+
+        const years = Math.floor(
+            totalSeconds / (60*60*24*365)
+        );
+
+        const months = Math.floor(
+            (totalSeconds % (60*60*24*365))
+            / (60*60*24*30)
+        );
+
+        const days = Math.floor(
+            (totalSeconds % (60*60*24*30))
+            / (60*60*24)
+        );
+
+        const hours = Math.floor(
+            (totalSeconds % (60*60*24))
+            / (60*60)
+        );
+
+        const minutes = Math.floor(
+            (totalSeconds % (60*60))
+            / 60
+        );
+
+        /* tampilkan */
+
+        document.getElementById("years").innerText = years;
+
+        document.getElementById("months").innerText = months;
+
+        document.getElementById("days").innerText = days;
+
+        document.getElementById("hours").innerText = hours;
+
+        document.getElementById("minutes").innerText = minutes;
+    }
+
+    updateCountdown();
+
+    setInterval(updateCountdown, 1000);
+}
+
+</script>
+
+</body>
+</html>

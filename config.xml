@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.kamu.euro2028" version="1.0.0" xmlns="http://w3.org">
+    <name>Euro2028</name>
+    <description>Aplikasi UEFA Euro 2028 Library</description>
+    <author email="developer@kamu.com">Nama Kamu</author>
+    <icon src="logo.jpg" />
+    
+    
+    
+    <content src="index.html" />
+    <access origin="*" />
+
+    <!-- Konfigurasi Layar Kunci Menyamping dan Layar Penuh -->
+    <preference name="Orientation" value="landscape" />
+    <preference name="Fullscreen" value="true" />
+</widget>
