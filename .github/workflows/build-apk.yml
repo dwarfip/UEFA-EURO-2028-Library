@@ -28,21 +28,29 @@ jobs:
 
     - name: Create Cordova Project
       run: cordova create android-app com.contoh.app EURO28
-
+      
     - name: Copy All Web Files & Config to App
       run: |
         # 1. Hapus folder www bawaan dari Cordova terlebih dahulu
         rm -rf android-app/www
-        
-        # 2. Salin seluruh folder www milik Anda beserta semua isinya tanpa kecuali
-        cp -r www android-app/www
-        
-        # 3. Pengaturan Logo Otomatis (Mengambil logo.png dari dalam folder www)
-        if [ -f "android-app/www/logo.png" ]; then 
+        mkdir -p android-app/www
+
+        # 2. Salin SEMUA file dan folder yang ada di depan secara otomatis
+        # Menggunakan rsync agar bisa mengecualikan folder sistem dengan mudah
+        rsync -av --exclude='.git' --exclude='.github' --exclude='android-app' ./ android-app/www/
+
+        # 3. Pengaturan Logo Otomatis (Mencari file logo.png secara fleksibel)
+        if [ -f "android-app/www/logo.png" ]; then
           cp android-app/www/logo.png android-app/logo.png
           cd android-app
           sed -i '/<\/widget>/i \    <icon src="logo.png" \/>' config.xml
+        elif [ -f "android-app/www/Images/logo.png" ]; then
+          cp android-app/www/Images/logo.png android-app/logo.png
+          cd android-app
+          sed -i '/<\/widget>/i \    <icon src="logo.png" \/>' config.xml
         fi
+        
+        
         
 
     - name: Build APK File
