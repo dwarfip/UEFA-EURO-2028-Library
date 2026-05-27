@@ -1,9 +1,8 @@
-name: Build Android APK
+name: EURO28
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -22,31 +21,37 @@ jobs:
     - name: Install Node.js & Cordova
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
-    - run: npm install -g cordova
+        node-version: 18
+
+    - name: Run npm install -g cordova
+      run: npm install -g cordova
 
     - name: Create Cordova Project
-      run: |
-        cordova create android-app com.kamu.euro2028 "Euro2028"
-        rm -rf android-app/www/*
-        rm -f android-app/config.xml
-        
-            # 5. Menyalin SEMUA file sekaligus ke folder aset aplikasi
-            
+      run: cordova create android-app com.contoh.app AplikasiSaya
+
     - name: Copy All Web Files & Config to App
       run: |
-        cp -r * android-app/www/         # Menyalin semua file & folder ke dalam www/
-        cp config.xml android-app/       # config.xml tetap wajib ditaruh di folder utama Android
-
+        # Membuat folder tujuan terlebih dahulu jika belum ada
+        mkdir -p android-app/www/
+        
+        # Menyalin file html, css, js, dan folder Fonts secara spesifik agar tidak crash
+        cp *.html android-app/www/ 2>/dev/null || true
+        cp *.css android-app/www/ 2>/dev/null || true
+        cp *.js android-app/www/ 2>/dev/null || true
+        
+        # Menyalin folder Fonts beserta isinya jika ada
+        if [ -d "Fonts" ]; then cp -r Fonts android-app/www/; fi
+        if [ -d "www/Fonts" ]; then cp -r www/Fonts android-app/www/; fi
 
     - name: Build APK File
       run: |
         cd android-app
         cordova platform add android
-        cordova build android --release
+        cordova build android --debug
 
     - name: Upload Finished APK
       uses: actions/upload-artifact@v4
       with:
-        name: Aplikasi-Android-Kamu
-        path: android-app/platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk
+        name: Aplikasi-HTML-Debug-APK
+        path: android-app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+        
